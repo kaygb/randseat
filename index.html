@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>随机座位生成器 - 咔格在线工具</title>
+    <meta name="keywords" content="kaygb,珂泽在线工具,随机密码生成器,密码生成器,随机密码">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/kaygb/twentytwenty/kaygbcom/icon/f1.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <style>
+        body{
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body  style="background:#f5f6fa">
+    <!-- 导航 -->
+    <nav class="navbar navbar-dark bg-dark fixed-top shadow-sm ">
+		<div class="container"> 
+			<a class="navbar-brand" href="./">KZOT</a>
+
+			<button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+					<a class="nav-link" href="//www.kaygb.com" target="_blank">Home</a>
+                    <a class="nav-link" href="//blog.kaygb.com" target="_blank">BLOG</a>
+                    <a class="nav-link" href="//github.com/kaygb" target="_blank">Github</a>
+
+				</div>
+			</div>
+		</div>
+	</nav>
+    <!-- /导航 -->
+
+    <!-- 幕布 -->
+    <div class="jumbotron jumbotron-fluid" style="margin-top: 48px;">
+		<div class="container">
+			 <h1 class="display-4">随机座位生成器</h1>
+
+			<p class="lead">根据学生编号，生成对应座位号</p>
+		</div>
+	</div>
+    <!-- /幕布 -->
+
+    <!-- 主体 -->
+
+    <div class="container">
+		<div class="row">
+			<div class="col-md-12">
+			    
+				<div class="card border-0 shadow-sm mb-4 rounded-0">
+					
+					<div class="card-body">
+
+                        <div class="input-group input-group-sm mb-3 mt-3">
+							<div class="input-group-prepend">
+							  <span class="input-group-text" id="">总人数</span>
+							</div>
+							<input type="text" id="sum" class="form-control" aria-describedby="inputGroup-sizing-sm">
+						  </div>
+						  <!-- <div class="input-group input-group-sm mb-3 mt-3">
+							<div class="input-group-prepend">
+							  <span class="input-group-text" id="">有多少排</span>
+							</div>
+							<input type="text" id="hang" value="6" class="form-control" aria-describedby="inputGroup-sizing-sm">
+						  </div> -->
+                          <div class="input-group input-group-sm mb-3 mt-3">
+							<div class="input-group-prepend">
+							  <span class="input-group-text" id="">每排人数</span>
+							</div>
+							<input type="text" id="lie" class="form-control" aria-describedby="inputGroup-sizing-sm">
+						  </div>
+                          
+                            <button type="button" id="submit" class="btn btn-success" style="margin-bottom: 20px;">生成随机座位号</button>
+                          
+						  
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">生成的随机序列</span>
+                            </div>
+                            <textarea id="res"  class="form-control" aria-label="With textarea" cols="5"></textarea>
+                          </div>
+
+					</div>
+				
+				</div>
+			</div>
+
+            <div class="col-md-12">
+                <div class="card border-0 shadow-sm mb-4 rounded-0">
+                    <div class="alert alert-primary " style="margin: 10px;" role="alert">
+                        表格在下方生成
+                      </div>
+                    <table class="table table-bordered">
+                        <tbody id="content">
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                    
+                
+            </div>
+
+		</div>
+	</div>
+
+    <!-- /主体 -->
+    
+    <!-- <input type="text" name="hang" id="hang">
+    <input type="text" name="lie" id="lie">
+    <input type="text" name="sum" id="sum">
+    <button type="button" id="submit">提交</button> -->
+    <!-- <textarea id="res"></textarea> -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // let hang = document.getElementById("hang");
+        
+        let btn = document.getElementById("submit");
+        
+
+        btn.onclick = function(){
+            let lie = document.getElementById("lie").value;
+            let sum = document.getElementById("sum").value;
+            console.log("lie="+lie);
+            console.log("sum="+sum);
+            let arr = [];
+            for(let i = 0;i<sum;i++){
+                arr[i] = i+1;
+            }
+
+            function randSort1(arr){
+                for(var i = 0,len = arr.length;i < len; i++ ){
+                var rand = parseInt(Math.random()*len);
+                var temp = arr[rand];
+                arr[rand] = arr[i];
+                arr[i] = temp;
+                }
+                return arr;
+            }
+            let arr2 = randSort1(arr);
+            // console.log(randSort1(arr));
+            console.log(arr2);
+            document.getElementById("res").value = arr2;
+            let html = "<tr>";
+            for(let i = 1;i<=arr2.length;i++){
+                let isline = 0;
+                if((i-1)%lie == 0){
+                    html+="</tr><tr>";
+                }
+                html+="<td>"+ arr[i-1] + "</td>";
+                
+            }
+            html+="</tr>";
+            document.getElementById("content").innerHTML=html;
+            console.log(html)
+
+        }
+
+    </script>
+</body>
+</html>
