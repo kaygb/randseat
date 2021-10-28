@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
 <head>
     <title>随机座位生成器 - 咔格在线工具</title>
     <meta name="keywords" content="kaygb,珂泽在线工具,随机密码生成器,密码生成器,随机密码">
@@ -55,7 +55,7 @@
 
                         <div class="input-group input-group-sm mb-3 mt-3">
 							<div class="input-group-prepend">
-							  <span class="input-group-text" id="">总人数</span>
+							  <span class="input-group-text" id="">人数总量</span>
 							</div>
 							<input type="text" id="sum" class="form-control" aria-describedby="inputGroup-sizing-sm">
 						  </div>
@@ -71,8 +71,21 @@
 							</div>
 							<input type="text" id="lie" class="form-control" aria-describedby="inputGroup-sizing-sm">
 						  </div>
+
+                          <div class="input-group input-group-sm mb-3 mt-3">
+							<div class="input-group-prepend">
+							  <span class="input-group-text" id="">位置编号过滤</span>
+							</div>
+							<input type="text" id="seatnum" class="form-control" placeholder="数字，用空格隔开，数量和下方一致" aria-describedby="inputGroup-sizing-sm">
+						  </div>
+                          <div class="input-group input-group-sm mb-3 mt-3">
+							<div class="input-group-prepend">
+							  <span class="input-group-text" id="">学生编号过滤</span>
+							</div>
+							<input type="text" id="stunum" class="form-control" placeholder="数字，用空格隔开"  aria-describedby="inputGroup-sizing-sm">
+						  </div>
                           
-                            <button type="button" id="submit" class="btn btn-success" style="margin-bottom: 20px;">生成随机座位号</button>
+                          <button type="button" id="submit" class="btn btn-success" style="margin-bottom: 20px;">生成随机座位号</button>
                           
 						  
                           <div class="input-group">
@@ -90,19 +103,19 @@
             <div class="col-md-12">
                 <div class="card border-0 shadow-sm mb-4 rounded-0">
                     <div class="alert alert-primary " style="margin: 10px;" role="alert">
-                        表格在下方生成
+                        表格在下方生成，座位编号从左到右为1,2,3,4,5,6... 生成后ext表示座位已经被占用，其余座位为学生编号
                       </div>
                     <table class="table table-bordered">
                         <tbody id="content">
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
+                            <td>座位编号1</td>
+                            <td>座位编号2</td>
+                            <td>座位编号3</td>
                         </tr>
                         <tr>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
+                            <td>座位编号4</td>
+                            <td>座位编号5</td>
+                            <td>座位编号6</td>
                         </tr>
                         </tbody>
                     </table>
@@ -131,21 +144,74 @@
         
 
         btn.onclick = function(){
+            //获取排数和总人数
             let lie = document.getElementById("lie").value;
             let sum = document.getElementById("sum").value;
             console.log("lie="+lie);
             console.log("sum="+sum);
-            let arr = [];
+
+
+            // 获取需要过滤的座位编号
+            let seatnum_str = document.getElementById("seatnum").value;
+            let seatnum = new Array();
+            if(seatnum_str!=null || seatnum_str.length()!=0){
+                seatnum = seatnum_str.split(" ");
+            }
+            console.log(seatnum);
+                // 过滤空格和空字符，转换字符串
+            let newseatnum = new Array();
+            let ind = 0;
+            for(let i = 0;i<seatnum.length;i++){
+                if(seatnum[i]!= "" || seatnum[i]!= ''){
+                    newseatnum[ind++]=seatnum[i]*1;
+                }
+            }
+            console.log(newseatnum);
+
+
+            // 获取需要过滤的学生编号
+            let stunum = new Array();
+            let stunum_str = document.getElementById("stunum").value;
+            if(stunum_str!=null || stunum_str.length()!=0){
+                stunum = stunum_str.split(" ");
+            }
+            console.log(stunum);
+                // 过滤空格和空字符，转换字符串
+            let newstunum = new Array();
+            let ind1 = 0;
+            for(let i = 0;i<stunum.length;i++){
+                if(stunum[i]!= "" || stunum[i]!= ''){
+                    newstunum[ind1++]=stunum[i]*1;
+                }
+            }
+            console.log(newstunum);
+
+
+            // 处理随机生成
+            let arr = new Array();
+            // 填充学生编号
+            let st = 1;
             for(let i = 0;i<sum;i++){
-                arr[i] = i+1;
+                let flag=0;
+                for(let j = 0;j<newstunum.length;j++){
+                    if(newstunum[j]==st){
+                        flag = 1;
+                        st++;
+                        break;
+                    }
+                }
+                if(flag==0){
+                    arr.push(st++);
+                }
+                
             }
 
             function randSort1(arr){
                 for(var i = 0,len = arr.length;i < len; i++ ){
-                var rand = parseInt(Math.random()*len);
-                var temp = arr[rand];
-                arr[rand] = arr[i];
-                arr[i] = temp;
+                    var rand = parseInt(Math.random()*len);
+                    var temp = arr[rand];
+                    arr[rand] = arr[i];
+                    arr[i] = temp;
                 }
                 return arr;
             }
@@ -153,14 +219,28 @@
             // console.log(randSort1(arr));
             console.log(arr2);
             document.getElementById("res").value = arr2;
+            // 生成前台html
             let html = "<tr>";
-            for(let i = 1;i<=arr2.length;i++){
+            let st1 = 0;
+            for(let i = 1;i<=sum;i++){
                 let isline = 0;
                 if((i-1)%lie == 0){
                     html+="</tr><tr>";
                 }
-                html+="<td>"+ arr[i-1] + "</td>";
-                
+
+                let flag=0;
+                for(let j = 0;j<newseatnum.length;j++){
+                    if(newseatnum[j]==i){
+                        flag = 1;
+                        // st1++;
+                        break;
+                    }
+                }
+                if(flag==0){
+                    html+="<td>"+ arr2[st1++] + "</td>";
+                }else{
+                    html+="<td style='color:red'>"+ "ext" + "</td>";
+                }
             }
             html+="</tr>";
             document.getElementById("content").innerHTML=html;
